@@ -54,7 +54,7 @@ var overlayMaps = {
 };
 var lc=L.control.layers(baseMaps, overlayMaps);
 lc.addTo(m);
-var clickable = L.geoJson(/*"",{style:{opacity:0,fillOpacity:0},pointToLayer:pass}*/).addTo(m)
+var clickable = L.geoJson("",{style:{opacity:0}}).addTo(m)
 clickable.on("click", getInfo);
 function getInfo(e){
     function getLayer(z){
@@ -96,4 +96,3 @@ function getClickable(){
 		toGeoJSON(data,function(g){gg=g;clickable.addData(g);});
 	});
 }
-function pass(){};
