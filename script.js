@@ -53,7 +53,7 @@ var overlayMaps = {
 };
 var lc=L.control.layers(baseMaps, overlayMaps);
 lc.addTo(m);
-var clickable = L.geoJson("",{style:{opacity:0}}).addTo(m)
+var clickable = L.geoJson("",{style:{opacity:0,fillOpacity:0},pointToLayer:pass}).addTo(m)
 clickable.on("click", getInfo);
 function getInfo(e){
     function getLayer(z){
@@ -78,6 +78,7 @@ function getInfo(e){
 		popUp = L.popup().setLatLng(latlng).setContent(popUpcontent).openOn(m);
 	});
 }
+var gg;
 m.on("moveend", getClickable);
 getClickable();
 function getClickable(){
@@ -91,6 +92,7 @@ function getClickable(){
 	var url = L.Util.template(urlT, urlOpt);
 	L.Util.jsonp(url,function (data){
 		clickable.clearLayers();
-		toGeoJSON(data,function(g){clickable.addData(g);});
+		toGeoJSON(data,function(g){gg=g;clickable.addData(g);});
 	});
 }
+function pass(){};
