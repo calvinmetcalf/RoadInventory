@@ -31,10 +31,9 @@ var mq=L.tileLayer(mopt.url,mopt.options);
   "Water Color":stamen.waterColor,
   "Cloud Made":cloudmade.orig
 };
-var tlayer = L.layerGroup();
+
 var overlayMaps = {
- "Roads":r, 
- "test":tlayer
+ "Roads":r
 };
 var lc=L.control.layers(baseMaps, overlayMaps);
 lc.addTo(m);
