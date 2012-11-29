@@ -1,6 +1,6 @@
 var popUp,
 	clickable = L.geoJson("",{style:{opacity:0}}).addTo(m);
-clickable.on("click", getInfo);
+m.on("click", getInfo);
 function getInfo(e){
     function getLayer(z){
      return (z-4)*2;   
@@ -23,20 +23,4 @@ function getInfo(e){
 		var popUpcontent = L.Util.template("<div><ol><li>{el}</li></ol></div>",{el: out.join("</li><li>")});
 		popUp = L.popup().setLatLng(latlng).setContent(popUpcontent).openOn(m);
 	});
-}
-m.on("moveend", getClickable);
-getClickable();
-function getClickable(){
-    function getLayer(z){
-     return (z-4)*2;   
-    }
-    var b = m.getBounds();
-    var zoom = m.getZoom();
-    var urlT = "http://services.massdot.state.ma.us/ArcGIS/rest/services/RoadInventory/Roads/MapServer/{layer}/query?geometry={bounds}&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelContains&returnGeometry=true&outSR=4326&f=json";
-	var urlOpt = {layer: getLayer(zoom), bounds:b.toBBoxString()};
-	var url = L.Util.template(urlT, urlOpt);
-	L.Util.jsonp(url,function (data){
-		clickable.clearLayers();
-		toGeoJSON(data,function(g){clickable.addData(g);});
-	});
-}
+};

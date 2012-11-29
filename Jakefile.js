@@ -2,7 +2,7 @@ var fs = require('fs');
 var uglifyjs = require('uglify-js');
 desc('Combine and compress Road Inventory source files');
 task('build', function(){
-	concat(["array-polyfill.js", "esri2geo.js", "leaflet-hash.js", "leaflet.ajax.js", "script.js"/*,"click.js"*/],"script-src.js")
+	concat(["array-polyfill.js", "esri2geo.js", "leaflet-hash.js", "leaflet.ajax.js", "script.js","click.js"],"script-src.js")
 	});
 task('click', ["build"], function(){
 	concat(["script-src.js","click.js"],"click.min.js")

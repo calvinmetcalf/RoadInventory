@@ -1,9 +1,9 @@
 var m = L.map('map').setView([42.2, -71], 8),
-    h = new L.Hash(m),
     r=L.tileLayer("//services.massdot.state.ma.us/ArcGIS/rest/services/RoadInventory/Roads/MapServer/tile/{z}/{y}/{x}",{attribution: 'Road Tiles from <a href="http://www.massdot.state.ma.us/planning/Main.aspx" target="_blank">MassDOT Planning</a>'}).addTo(m),
     t=L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{attribution:'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'});
     var mapQuestAttr = 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; ';
 var osmDataAttr = 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+m.addHash();
 var mopt = {
     url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpeg',
     options: {attribution:mapQuestAttr + osmDataAttr, subdomains:'1234'}
@@ -31,8 +31,10 @@ var mq=L.tileLayer(mopt.url,mopt.options);
   "Water Color":stamen.waterColor,
   "Cloud Made":cloudmade.orig
 };
+var tlayer = L.layerGroup();
 var overlayMaps = {
- "Roads":r   
+ "Roads":r, 
+ "test":tlayer
 };
 var lc=L.control.layers(baseMaps, overlayMaps);
 lc.addTo(m);

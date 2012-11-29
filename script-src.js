@@ -268,6 +268,15 @@ if (!!module && typeof module !== undefined) module.exports = toGeoJSON;(functio
             this.isListening = false;
         }
     };
+    L.hash = function(map){
+        return new L.Hash(map);	
+    };
+    L.Map.prototype.addHash = function(){
+		this._hash = L.hash(this);
+	};
+	L.Map.prototype.removeHash = function(){
+		this._hash.remove();
+	}
 })(window);L.GeoJSON.AJAX=L.GeoJSON.extend({
     defaultAJAXparams:{
      dataType:"json",
@@ -340,11 +349,11 @@ L.Util.jsonp.cb = {};
 L.geoJson.ajax = function (geojson, options) {
     return new L.GeoJSON.AJAX(geojson, options);
 };var m = L.map('map').setView([42.2, -71], 8),
-    h = new L.Hash(m),
     r=L.tileLayer("//services.massdot.state.ma.us/ArcGIS/rest/services/RoadInventory/Roads/MapServer/tile/{z}/{y}/{x}",{attribution: 'Road Tiles from <a href="http://www.massdot.state.ma.us/planning/Main.aspx" target="_blank">MassDOT Planning</a>'}).addTo(m),
     t=L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{attribution:'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'});
     var mapQuestAttr = 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; ';
 var osmDataAttr = 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+m.addHash();
 var mopt = {
     url: 'http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.jpeg',
     options: {attribution:mapQuestAttr + osmDataAttr, subdomains:'1234'}
@@ -372,8 +381,36 @@ var mq=L.tileLayer(mopt.url,mopt.options);
   "Water Color":stamen.waterColor,
   "Cloud Made":cloudmade.orig
 };
+var tlayer = L.layerGroup();
 var overlayMaps = {
- "Roads":r   
+ "Roads":r, 
+ "test":tlayer
 };
 var lc=L.control.layers(baseMaps, overlayMaps);
 lc.addTo(m);
+var popUp,
+	clickable = L.geoJson("",{style:{opacity:0}}).addTo(m);
+m.on("click", getInfo);
+function getInfo(e){
+    function getLayer(z){
+     return (z-4)*2;   
+    }
+    var zoom = m.getZoom();
+    var latlng = e.latlng;
+    var lat = latlng.lat;
+    var lng = latlng.lng;
+    var urlT = "http://services.massdot.state.ma.us/ArcGIS/rest/services/RoadInventory/Roads/MapServer/{layer}/query?geometry={lng}%2C{lat}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIndexIntersects&returnGeometry=false&outSR=4326&outFields=Jurisdiction,StreetName,FunctionalClassification&f=json";
+	var urlOpt = {layer: getLayer(zoom), lng: lng, lat: lat};
+	var url = L.Util.template(urlT, urlOpt);
+	L.Util.jsonp(url,function (data){
+		var out = [];
+		for(var i in data.features){
+			var streetName = data.features[i].attributes.StreetName;
+			if(out.indexOf(streetName)===-1){
+				out.push(streetName);
+			}
+		}
+		var popUpcontent = L.Util.template("<div><ol><li>{el}</li></ol></div>",{el: out.join("</li><li>")});
+		popUp = L.popup().setLatLng(latlng).setContent(popUpcontent).openOn(m);
+	});
+};
