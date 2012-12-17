@@ -1,5 +1,6 @@
 var m = L.map('map').setView([42.2, -71], 8),
     r=L.tileLayer("//services.massdot.state.ma.us/ArcGIS/rest/services/RoadInventory/Roads/MapServer/tile/{z}/{y}/{x}",{attribution: 'Road Tiles from <a href="http://www.massdot.state.ma.us/planning/Main.aspx" target="_blank">MassDOT Planning</a>'}).addTo(m),
+        fp=L.tileLayer("//services.massdot.state.ma.us/ArcGIS/rest/services/GeneralPurpose/Structures/MapServer/tile/{z}/{y}/{x}",{attribution: 'Building Tiles from <a href="http://www.massdot.state.ma.us/planning/Main.aspx" target="_blank">MassDOT Planning</a>'}).addTo(m),
     t=L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{attribution:'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'});
     var mapQuestAttr = 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; ';
 var osmDataAttr = 'Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
@@ -32,6 +33,7 @@ var mq=L.tileLayer(mopt.url,mopt.options);
 };
 
 var overlayMaps = {
+	 "Foot Prints":fp,
  "Roads":r
 };
 var lc=L.control.layers(baseMaps, overlayMaps);
